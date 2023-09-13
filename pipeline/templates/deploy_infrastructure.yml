@@ -1,0 +1,18 @@
+jobs:
+  - deployment: DeployInfrastructure
+    environment: ${{parameters.environmentName}}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+            - task: AzureResourceManagerTemplateDeployment@3
+              name: DeployResources
+              displayName: Display all resources defined in bicep files
+              inputs:
+                connectedServiceName: ${{parameters.serviceConnection}}
+                deploymentName: $(Build.BuildNumber)
+                location: ${{parameters.location}}
+                resourceGroupName: ${{parameters.resourceGroup}}
+                csmFile: ${{parameters.resourceFile}}
+                csmParametersFile: ${{parameters.parametersFile}}

@@ -1,0 +1,68 @@
+name: $(Date:yyyyMMdd)$(Rev:.r)
+
+# --------------------------------------------------------------------------#
+
+trigger: none
+
+# --------------------------------------------------------------------------#
+
+variables:
+  environmentName: "SomeDevOpsEnvironment"
+  location: "westeurope"
+  name: "InterviewProject"
+  resourceGroup: "RGPRDRANDOM01"
+  serviceConnection: "SomeServiceConnection"
+  parametersFile: "infrastructure/main.json"
+  vmImageName: "ubuntu-latest"
+
+# --------------------------------------------------------------------------#
+
+stages:
+
+  - stage: LintAndValidate
+    dependsOn:
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - template: templates/lint.yml
+
+      - template: templates/validate.yml
+        parameters:
+          resourceGroupName: $(resourceGroup)
+          serviceConnection: $(serviceConnection)
+          location: $(location)
+          parametersFile: $(parametersFile)
+          resourceFile: $(resourceFile)
+
+  - stage: BuildProject
+    displayName: Build the project and publish artifact
+    dependsOn:
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - template: templates/build_and_publish.yml
+
+  - stage: DeployInfrastructure
+    dependsOn: LintAndValidate
+    pool:
+      vmImage: $(vmImageName)
+    jobs:
+      - template: templates/deploy_infrastructure.yml
+        parameters:
+          environmentName: $(environmentName)
+          resourceGroupName: $(resourceGroup)
+          serviceConnection: $(serviceConnection)
+          location: $(location)
+          parametersFile: $(parametersFile)
+          resourceFile: $(resourceFile)
+
+  - stage: DeployProject
+    dependsOn:
+      - BuildProject
+      - DeployInfrastructure
+    pool:
+      imageName: $(vmImageName)
+    jobs:
+      - template: templates/deploy_project.yml
+        parameters:
+

@@ -1,0 +1,16 @@
+jobs:
+  - job: DeployAPI
+    displayName: Deploy APIs
+    steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          path: "$(System.DefaultWorkingDirectory)/api"
+
+      - task: AzureFunctionApp@1
+        inputs:
+          azureSubscription: ${{parameters.serviceConnection}}
+          appType: functionAppLinux
+          appName: "fn-builder-api-01"
+          runtimeStack: "PYTHON|3.9"
+          package: $(System.DefaultWorkingDirectory)/api/**/*.zip
+          deploymentMethod: zipDeploy

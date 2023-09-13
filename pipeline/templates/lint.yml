@@ -1,0 +1,7 @@
+jobs:
+  - job: LintCode
+    displayName: Static code analysis of infrastructure code
+    steps:
+      - script: |
+          az bicep build --file infrastructure/main.bicep
+        name: LintBicepCode
