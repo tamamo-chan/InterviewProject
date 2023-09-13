@@ -17,6 +17,8 @@ def get_user_collection_by_id(user_id):
 
 
 def get_buildable_sets(username):
+    if username not in [user["username"] for user in get_all_users()["Users"]]:
+        return []
     user_collection = get_user_collection_by_username(username)
     sets = get_all_sets()
     build_able_sets = []
