@@ -57,3 +57,86 @@ def users_worth_collaborating_with(set_name, user):
             users_worth_collabing_with.append(potential_collab_mate.username)
 
     return users_worth_collabing_with
+
+
+def buildable_sets_with_substitutable_colors(username):
+    user = User(username)
+    all_sets = BuildSet.get_all_buildSets()
+
+    buildable_sets = []
+    for build_set in all_sets:
+        buildable = True
+        pieces_that_already_works = [(temp_piece, missing) for (temp_piece, missing) in
+                                     compile_missing_pieces_list(build_set.name, user).items() if missing <= 0]
+        used_colors = list(set([temp_piece.color for (temp_piece, missing) in pieces_that_already_works]))
+
+        set_collection_based_on_id = calculate_set_collection_based_on_id(build_set, pieces_that_already_works)
+
+        user_collection_based_on_id = calculate_user_collection_based_on_id(used_colors,
+                                                                            user)
+
+        for piece_id, color_list in set_collection_based_on_id.items():
+            if not buildable:
+                break
+            if piece_id not in user_collection_based_on_id.keys():
+                buildable = False
+                break
+            relevant_user_pieces = calculate_relevant_pieces_from_user(user_collection_based_on_id.get(piece_id), used_colors)
+
+            for color_dict in color_list:
+                color_code_with_closest_amount = closest_value(relevant_user_pieces, next(iter(color_dict.values())))
+                if not color_code_with_closest_amount:
+                    buildable = False
+                    break
+                used_colors.append(color_code_with_closest_amount)
+                relevant_user_pieces = calculate_relevant_pieces_from_user(relevant_user_pieces, used_colors)
+
+        if buildable:
+            buildable_sets.append(build_set.name)
+
+    return buildable_sets
+
+
+def calculate_user_collection_based_on_id(used_colors, user):
+    user_collection_based_on_id = {}
+    for user_piece, quantity in user.collection.items():
+        if user_piece.color in used_colors:
+            continue
+
+        if user_piece.id not in user_collection_based_on_id.keys():
+            user_collection_based_on_id[user_piece.id] = [{user_piece.color: quantity}]
+        else:
+            user_collection_based_on_id[user_piece.id].append({user_piece.color: quantity})
+    return user_collection_based_on_id
+
+
+def calculate_set_collection_based_on_id(build_set, pieces_that_already_works):
+    set_collection_based_on_id = {}
+    for set_piece, quantity in [
+        (piece, quantity) for (piece, quantity) in build_set.collection.items()
+        if piece not in [working_piece for working_piece, missing_amount in pieces_that_already_works]
+    ]:
+        if set_piece.id not in set_collection_based_on_id.keys():
+            set_collection_based_on_id[set_piece.id] = [{set_piece.color: quantity}]
+        else:
+            set_collection_based_on_id[set_piece.id].append({set_piece.color: quantity})
+    return set_collection_based_on_id
+
+
+def calculate_relevant_pieces_from_user(relevant_user_pieces, used_colors):
+    relevant_user_pieces = [color_dict for color_dict in relevant_user_pieces
+                            if next(iter(color_dict.keys())) not in used_colors]
+    return relevant_user_pieces
+
+
+def closest_value(color_list: list, k: int) -> str:
+    closest_key = None
+    closest_val = float('inf')
+
+    for color_dict in color_list:
+        quantity = next(iter(color_dict.values()))
+        if quantity >= k and abs(quantity - k) < abs(closest_val - k):
+            closest_val = quantity
+            closest_key = next(iter(color_dict.keys()))
+
+    return closest_key

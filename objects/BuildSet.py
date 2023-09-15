@@ -5,10 +5,16 @@ from objects.Piece import Piece
 
 
 class BuildSet:
-    def __init__(self, name):
+    def __init__(self, name, id=None, collection=None):
         self.name = name
-        self.id = get_set_summary(self.name)["id"]
-        self.load_collection()
+        if not id:
+            self.id = get_set_summary(self.name)["id"]
+        else:
+            self.id = id
+        if not collection:
+            self.load_collection()
+        else:
+            self.collection = collection
 
     def load_collection(self):
         collection = self.get_set_collection_by_id()
