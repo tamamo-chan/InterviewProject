@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subnetName": {
+            "value": "some-vnet/some-subnet"
+        },
+        "skuTier": {
+            "value": "F1"
+        },
+        "skuName": {
+            "value": "Free"
+        },
+        "storageSku": {
+            "value": "Standard_LRS"
+        },
+        "tags": {
+            "value": {
+                "owner": "tama-chan",
+                "solution": "Interview Project"
+            }
+        }
+    }
+}

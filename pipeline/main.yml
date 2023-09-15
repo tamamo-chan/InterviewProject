@@ -12,7 +12,7 @@ variables:
   name: "InterviewProject"
   resourceGroup: "RGPRDRANDOM01"
   serviceConnection: "SomeServiceConnection"
-  parametersFile: "infrastructure/main.json"
+  parametersFile: "infrastructure/main.parameters.json"
   vmImageName: "ubuntu-latest"
 
 # --------------------------------------------------------------------------#
