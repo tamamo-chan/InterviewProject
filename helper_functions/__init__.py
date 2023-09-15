@@ -30,7 +30,11 @@ def get_buildable_sets(username):
         user_has_all_pieces = True
 
         for piece in set_full_data["pieces"]:
-            user_has_piece = check_if_piece_quantity_in_user_collection(piece, user_collection)
+            designID = piece["part"]["designID"]
+            color_code = str(piece["part"]["material"])
+            quantity = piece["quantity"]
+            user_has_piece = 0 >= calculate_missing_pieces(user_collection, designID, color_code, quantity)
+            #user_has_piece = check_if_piece_quantity_in_user_collection(piece, user_collection)
             if not user_has_piece:
                 user_has_all_pieces = False
                 break
@@ -40,23 +44,11 @@ def get_buildable_sets(username):
     return build_able_sets
 
 
-def check_if_piece_quantity_in_user_collection(piece, user_collection):
-    designID = piece["part"]["designID"]
-    color_code = str(piece["part"]["material"])
-    quantity = piece["quantity"]
-    variant = extract_variant_from_user_collection(user_collection, designID, color_code)
-    if variant:
-        if variant["count"] >= quantity:
-            return True
-    return False
-
-
 def calculate_missing_pieces(user_collection, designID, color_code, quantity) -> int:
     variant = extract_variant_from_user_collection(user_collection, designID, color_code)
     if variant:
         return quantity - variant["count"]
     return quantity
-
 
 def extract_variant_from_user_collection(user_collection, designID, color_code) -> Optional[dict]:
     user_piece = next((piece_type for piece_type in user_collection if piece_type["pieceId"] == designID), None)
@@ -73,10 +65,8 @@ def compile_missing_pieces_list(set_name, user_collection):
         designID = piece["part"]["designID"]
         color_code = str(piece["part"]["material"])
         quantity = piece["quantity"]
-        user_has_piece = check_if_piece_quantity_in_user_collection(piece, user_collection)
-        if not user_has_piece:
-            amount = calculate_missing_pieces(user_collection, designID, color_code, quantity=quantity)
-            missing_pieces[(designID, color_code)] = amount
+        amount_missing = calculate_missing_pieces(user_collection, designID, color_code, quantity)
+        missing_pieces[(designID, color_code)] = amount_missing
     return missing_pieces
 
 
