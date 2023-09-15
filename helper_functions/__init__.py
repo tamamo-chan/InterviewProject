@@ -8,8 +8,7 @@ def get_buildable_sets(username):
     if username not in [user["username"] for user in get_all_users()["Users"]]:
         return []
     user = User(username=username)
-    sets = get_all_sets()["Sets"]
-    sets = [BuildSet(build_set["name"]) for build_set in sets]
+    sets = BuildSet.get_all_buildSets()
     build_able_sets = []
     for specific_set in sets:
 

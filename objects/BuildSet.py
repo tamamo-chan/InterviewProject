@@ -1,6 +1,6 @@
 from typing import List
 
-from helper_functions import get_set_summary, get_set_full_data
+from helper_functions import get_set_summary, get_set_full_data, get_all_sets
 from objects.Piece import Piece
 
 
@@ -22,3 +22,8 @@ class BuildSet:
         set_data = get_set_full_data(self.id)
         set_collection: List = set_data["pieces"]
         return set_collection
+
+
+    @staticmethod
+    def get_all_buildSets():
+        return [BuildSet(build_set["name"]) for build_set in get_all_sets()["Sets"]]
