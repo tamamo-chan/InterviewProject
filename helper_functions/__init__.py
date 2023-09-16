@@ -31,9 +31,9 @@ def calculate_missing_pieces(user, piece, quantity) -> int:
 
 
 def compile_missing_pieces_list(set_name, user):
-    set = BuildSet(set_name)
+    build_set = BuildSet(set_name)
     missing_pieces = {}
-    for piece, quantity in set.collection.items():
+    for piece, quantity in build_set.collection.items():
         amount_missing = calculate_missing_pieces(user, piece, quantity)
         missing_pieces[piece] = amount_missing
     return missing_pieces
