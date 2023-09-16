@@ -33,3 +33,4 @@ class BuildSet:
     @staticmethod
     def get_all_buildSets():
         return [BuildSet(build_set["name"]) for build_set in get_all_sets()["Sets"]]
+

@@ -43,8 +43,8 @@ def users_worth_collaborating_with(set_name, user):
     all_users = get_all_users()["Users"]
     all_users = [User(user_dict["username"]) for user_dict in all_users if user_dict["username"] != user.username]
     users_worth_collabing_with = []
+    missing_pieces = compile_missing_pieces_list(set_name=set_name, user=user)
     for potential_collab_mate in all_users:
-        missing_pieces = compile_missing_pieces_list(set_name=set_name, user=user)
 
         not_missing_pieces = []
 
