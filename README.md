@@ -18,6 +18,8 @@ The following question was not included in this project:
 
 The project was tested on Python 3.9.13. The required packages can be found in `requirements.txt`. 
 
+For running the API locally, you need Visual Studio Code and their Azure Functions extension installed. Furthermore, you need [Azure Functions Core Tools](https://github.com/Azure/azure-functions-core-tools#installing) installed.
+
 
 ## How to run
 
@@ -28,3 +30,7 @@ To run an individual solution, you navigate to the root of the project and run t
 To run all solutions:
 
 `python main.py`
+
+To run the API locally, navigate to the `BuildableSets/__init__.py` file and press F5. Once it is done loading, you should be able to access the API using the following link:
+
+`http://localhost:7071/api/BuildableSets?username=brickfan35`
